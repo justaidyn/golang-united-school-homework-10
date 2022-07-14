@@ -24,6 +24,7 @@ func Start(host string, port int) {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/name/{PARAM}", getParam).Methods(http.MethodGet)
+	router.HandleFunc("/bad", getBad).Methods(http.MethodGet)
 
 	log.Println(fmt.Printf("Starting API server on %s:%d\n", host, port))
 	if err := http.ListenAndServe(fmt.Sprintf("%s:%d", host, port), router); err != nil {
@@ -47,4 +48,8 @@ func getParam(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func getBad(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusInternalServerError)
 }
