@@ -25,6 +25,7 @@ func Start(host string, port int) {
 
 	router.HandleFunc("/name/{PARAM}", getParam).Methods(http.MethodGet)
 	router.HandleFunc("/bad", getBad).Methods(http.MethodGet)
+	router.HandleFunc("/headers", getHeader).Methods(http.MethodPost)
 
 	log.Println(fmt.Printf("Starting API server on %s:%d\n", host, port))
 	if err := http.ListenAndServe(fmt.Sprintf("%s:%d", host, port), router); err != nil {
@@ -52,4 +53,18 @@ func getParam(w http.ResponseWriter, r *http.Request) {
 
 func getBad(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
+}
+
+func getHeader(w http.ResponseWriter, r *http.Request) {
+	a, err := strconv.Atoi(r.Header.Get("a"))
+	if err != nil {
+		log.Println(err)
+	}
+	b, err := strconv.Atoi(r.Header.Get("b"))
+	if err != nil {
+		log.Println(err)
+	}
+	w.Header().Add("a+b", strconv.Itoa(a+b))
+
+	w.WriteHeader(http.StatusOK)
 }
